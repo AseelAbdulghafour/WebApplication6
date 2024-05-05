@@ -1,0 +1,4 @@
+namespace DesignDistrict.Frontend.Models
+{
+  
+}

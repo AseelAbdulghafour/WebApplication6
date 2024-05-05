@@ -1,6 +1,6 @@
 ﻿namespace WebApplication6.Entities.Model
 {
-    public class UserAccount
+    public class AuthService
     {
     }
 }

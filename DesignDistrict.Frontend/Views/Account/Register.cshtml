@@ -1,0 +1,9 @@
+﻿@using WebApplication6.Model.Request
+
+
+@model SignupRequest
+@using (Html.BeginForm("Register", "Account", FormMethod.Post))
+{
+    @Html.EditorForModel()
+    <button type="submit">Registor</button>
+}
