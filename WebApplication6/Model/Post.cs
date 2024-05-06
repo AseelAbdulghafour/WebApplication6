@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using WebApplication6.Entities.Model;
+using WebApplication6.Model;
 
 namespace DesignDistrict.Frontend.Model
 {
