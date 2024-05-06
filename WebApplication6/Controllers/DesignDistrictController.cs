@@ -44,11 +44,28 @@ namespace WebApplication6.Controllers
             return Ok(posts); 
         }
 
-        [HttpGet]
+        [HttpGet("{userId}")]
 
         public IEnumerable<DesignPost> GetPostsByUser(int userId)
         {
             return _context.DesignPosts.Where(p => p.Id == userId);
+        }
+
+        [HttpGet]
+        public IActionResult GetAllPosts()
+        {
+            var posts = _context.DesignPosts
+               .Select(p => new DesignDistrictResponse
+               {
+                   Id = p.Id,
+                   Description = p.PostDescription,
+                   Catagory = p.Catagory,
+                   PostImage = p.PostImage,
+                   Price = p.Item.Sum(r => r.Price)
+               })
+               .ToList();
+
+            return Ok(posts);
         }
     }
 }

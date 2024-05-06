@@ -8,8 +8,7 @@ using WebApplication6.Services.ProductApi.Services;
 
 namespace WebApplication6.Services
 {
-    public class AuthService
-    {
+   
         public class TokenService
         {
             private readonly IConfiguration _configuration;
@@ -61,5 +60,5 @@ namespace WebApplication6.Services
             }
         }
     }
-}
+
 
