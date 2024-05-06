@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProductApi.Models.Entites;
 using WebApplication6.Model;
+using WebApplication6.Model.Request;
 using WebApplication6.Model.Responses;
 using WebApplication6.Services.ProductApi.Services;
 
@@ -68,7 +69,43 @@ namespace WebApplication6.Controllers
 
             return Ok(posts);
         }
-       
+
+
+        [HttpGet("{postId}/comments")]
+        public IActionResult GetComment(int postId)
+        {
+            var comment = _context.DesignPosts
+                .Where(r => r.Id == postId)
+                .SelectMany(r => r.Comments).OrderByDescending(r => r.CreatedAt);
+
+            if (comment == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(comment);
+        }
+        [HttpPost("{postId}/comments")]
+        public IActionResult AddComment(int postId, CreateCommentRequest request)
+        {
+            var design = _context.DesignPosts.Find(postId);
+
+            var comment = new Comment
+            {
+                CommentText = request.Comment,
+                CreatedAt = DateTime.Now, 
+                Design = design
+
+
+            _context.Comments.Add(comment);
+            _context.SaveChanges();
+
+
+            return CreatedAtAction(nameof(GetComment), new { postId, commentId = comment.CommentId });
+
+        }
+
+    
         [HttpPost("create")]
         public async Task<IActionResult> CreatePosts(PostRequest request)
         {
@@ -79,10 +116,13 @@ namespace WebApplication6.Controllers
                 return NotFound("User not found");
             }
 
-            var post = new Post
+
+            var post = new DesignPost
             {
                 PostDescription = request.PostDescription,
-                Catagory = request.Catagory
+                Catagory = request.Catagory,
+                User = user
+               
 
             };
 
@@ -99,17 +139,15 @@ namespace WebApplication6.Controllers
             }
 
             post.PostImage = $"uploads/{user.Username}/{post.Id}_{request.PostImage.FileName}";
-            _context.Posts.Add(post);
-
+            _context.DesignPosts.Add(post);
 
             _context.SaveChanges();
 
             return Ok(new PostCreatedResponse { Id = post.Id });
         }
 
-
-
     }
 }
+
 
 

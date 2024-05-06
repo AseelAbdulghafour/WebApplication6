@@ -19,7 +19,6 @@ namespace ProductApi.Models.Entites
         public DbSet<DesignPost> DesignPosts { get; set; }
 
 
-        public DbSet<Post> Posts { get; set; }
 
 
 
