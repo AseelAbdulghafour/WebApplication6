@@ -73,8 +73,37 @@ namespace WebApplication6.Controllers
             return Ok(posts);
         }
 
-        
-       
+        [HttpGet("{postId}/comments")]
+        public IActionResult GetComment(int postId)
+        {
+            var comment = _context.DesignPosts.Where(r=> r.Id == postId).SelectMany(r=> r.Comments);
+
+            if (comment == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(comment);
+        }
+        [HttpPost("{postId}/comments")]
+        public IActionResult AddComment(int postId, Comment request)
+        {
+           
+
+            var comment = new Comment
+            {
+                CommentId = request.CommentId,
+                CommentText = request.CommentText,
+                CreatedAt = DateTime.UtcNow
+              
+            };
+            _context.Comments.Add(comment);
+            _context.SaveChanges();
+
+            return CreatedAtAction(nameof(GetComment), new { postId, commentId = comment.CommentId }, comment);
+
+        }
+
     }
 }
 
