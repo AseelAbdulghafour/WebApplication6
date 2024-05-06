@@ -63,6 +63,18 @@ namespace WebApplication6.Controllers
             return Ok(new { Message = "User Created" });
 
         }
+        [HttpGet("Logout")]
+        public IActionResult Logout()
+        {
+            HttpContext.SignOutAsync();
+            return Redirect("/DesignDistrict/Index");
+        }
+
+        [HttpGet("Denied")]
+        public IActionResult Denied()
+        {
+            return Unauthorized();
+        }
 
     }
 }
