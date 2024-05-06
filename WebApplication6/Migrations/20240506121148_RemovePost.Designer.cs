@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProductApi.Models.Entites;
 
@@ -11,9 +12,11 @@ using ProductApi.Models.Entites;
 namespace WebApplication6.Migrations
 {
     [DbContext(typeof(DesignDistrictContext))]
-    partial class DesignDistrictContextModelSnapshot : ModelSnapshot
+    [Migration("20240506121148_RemovePost")]
+    partial class RemovePost
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

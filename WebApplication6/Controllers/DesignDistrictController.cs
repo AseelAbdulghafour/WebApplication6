@@ -1,8 +1,10 @@
 ﻿using Azure.Identity;
+using DesignDistrict.Frontend.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProductApi.Models.Entites;
 using WebApplication6.Model;
+using WebApplication6.Model.Request;
 using WebApplication6.Model.Responses;
 using WebApplication6.Services.ProductApi.Services;
 
@@ -41,12 +43,7 @@ namespace WebApplication6.Controllers
             return Ok(posts); 
         }
 
-        //[HttpGet("{userId}")]
-
-        //public IEnumerable<DesignPost> GetPostsByUser(int userId)
-        //{
-        //    return _context.DesignPosts.Where(p => p.Id == userId);
-        //}
+        
 
         [HttpGet("{userId}")]
         public IEnumerable<DesignPost> GetUsersAndTheirPosts(int userId)
@@ -73,10 +70,13 @@ namespace WebApplication6.Controllers
             return Ok(posts);
         }
 
+
         [HttpGet("{postId}/comments")]
         public IActionResult GetComment(int postId)
         {
-            var comment = _context.DesignPosts.Where(r=> r.Id == postId).SelectMany(r=> r.Comments);
+            var comment = _context.DesignPosts
+                .Where(r => r.Id == postId)
+                .SelectMany(r => r.Comments).OrderByDescending(r => r.CreatedAt);
 
             if (comment == null)
             {
@@ -86,25 +86,67 @@ namespace WebApplication6.Controllers
             return Ok(comment);
         }
         [HttpPost("{postId}/comments")]
-        public IActionResult AddComment(int postId, Comment request)
+        public IActionResult AddComment(int postId, CreateCommentRequest request)
         {
-           
+            var design = _context.DesignPosts.Find(postId);
 
             var comment = new Comment
             {
-                CommentId = request.CommentId,
-                CommentText = request.CommentText,
-                CreatedAt = DateTime.UtcNow
-              
+                CommentText = request.Comment,
+                CreatedAt = DateTime.Now, 
+                Design = design
+
             };
             _context.Comments.Add(comment);
             _context.SaveChanges();
 
-            return CreatedAtAction(nameof(GetComment), new { postId, commentId = comment.CommentId }, comment);
+            return CreatedAtAction(nameof(GetComment), new { postId, commentId = comment.CommentId });
 
         }
 
+        [HttpPost("create")]
+        public async Task<IActionResult> CreatePosts(PostRequest request)
+        {
+            var username = User.FindFirst(TokenClaimsConstant.Username).Value;
+            var user = _context.UserAccounts.FirstOrDefault(u => u.Username == username);
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+
+            var post = new DesignPost
+            {
+                PostDescription = request.PostDescription,
+                Catagory = request.Catagory,
+                User = user
+               
+
+            };
+
+            Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(),
+                                        "uploads", user.Username.ToString()
+                                        ));
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(),
+                                        "uploads", user.Username.ToString(),
+                                        $"{post.Id}_{request.PostImage.FileName}");
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await request.PostImage.CopyToAsync(stream);
+            }
+
+            post.PostImage = $"uploads/{user.Username}/{post.Id}_{request.PostImage.FileName}";
+            _context.DesignPosts.Add(post);
+
+
+            _context.SaveChanges();
+
+            return Ok(new PostCreatedResponse { Id = post.Id });
+        }
+
+
     }
 }
+
 
 

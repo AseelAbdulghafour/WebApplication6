@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DesignDistrict.Frontend.Model;
+using Microsoft.EntityFrameworkCore;
 using WebApplication6.Model;
 
 namespace ProductApi.Models.Entites
@@ -16,6 +17,10 @@ namespace ProductApi.Models.Entites
         public DbSet<Item> Items { get; set; }
 
         public DbSet<DesignPost> DesignPosts { get; set; }
+
+
+       // public DbSet<Post> Posts { get; set; }
+
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
