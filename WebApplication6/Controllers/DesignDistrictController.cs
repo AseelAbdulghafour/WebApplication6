@@ -96,14 +96,16 @@ namespace WebApplication6.Controllers
                 CreatedAt = DateTime.Now, 
                 Design = design
 
-            };
+
             _context.Comments.Add(comment);
             _context.SaveChanges();
+
 
             return CreatedAtAction(nameof(GetComment), new { postId, commentId = comment.CommentId });
 
         }
 
+    
         [HttpPost("create")]
         public async Task<IActionResult> CreatePosts(PostRequest request)
         {
@@ -113,6 +115,7 @@ namespace WebApplication6.Controllers
             {
                 return NotFound("User not found");
             }
+
 
             var post = new DesignPost
             {
@@ -138,12 +141,10 @@ namespace WebApplication6.Controllers
             post.PostImage = $"uploads/{user.Username}/{post.Id}_{request.PostImage.FileName}";
             _context.DesignPosts.Add(post);
 
-
             _context.SaveChanges();
 
             return Ok(new PostCreatedResponse { Id = post.Id });
         }
-
 
     }
 }
