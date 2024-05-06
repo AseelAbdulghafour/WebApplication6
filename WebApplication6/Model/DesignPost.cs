@@ -9,6 +9,6 @@
         public List<Item> Item { get; set; }
         public List<Comment> Comments { get; set; }
         public string Catagory { get; set; }
-        public int TotalPrice { get; internal set; }
+        public decimal TotalPrice { get; internal set; }
     }
 }

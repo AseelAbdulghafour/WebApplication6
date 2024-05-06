@@ -44,11 +44,19 @@ namespace WebApplication6.Controllers
             return Ok(posts); 
         }
 
-        [HttpGet("{userId}")]
+        //[HttpGet("{userId}")]
 
-        public IEnumerable<DesignPost> GetPostsByUser(int userId)
+        //public IEnumerable<DesignPost> GetPostsByUser(int userId)
+        //{
+        //    return _context.DesignPosts.Where(p => p.Id == userId);
+        //}
+
+        [HttpGet("{userId}")]
+        public IEnumerable<DesignPost> GetUsersAndTheirPosts(int userId)
         {
-            return _context.DesignPosts.Where(p => p.Id == userId);
+            return _context.DesignPosts.
+                Where(r=> r.User.UserAccountId == userId)
+                .ToList();
         }
 
         [HttpGet]
