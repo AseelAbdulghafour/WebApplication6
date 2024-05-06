@@ -67,6 +67,7 @@ namespace WebApplication6.Controllers
             return Ok(new { Message = "User Created" });
 
         }
+       
 
     }
 }

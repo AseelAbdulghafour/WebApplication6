@@ -19,6 +19,8 @@ namespace DesignDistrict.Frontend.Controllers
             var design = await _client.GetBanks();
             return View(design.Data);
         }
+
+
     }
 }
 

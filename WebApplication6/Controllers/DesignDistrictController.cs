@@ -22,10 +22,7 @@ namespace WebApplication6.Controllers
         }
 
 
-        //public IActionResult Index()
-        //{
-        //    return View();
-        //}
+        
         [HttpGet("myposts")]
         public IActionResult GetMyPosts() 
         { 
@@ -75,6 +72,9 @@ namespace WebApplication6.Controllers
 
             return Ok(posts);
         }
+
+        
+       
     }
 }
 
