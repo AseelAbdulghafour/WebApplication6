@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProductApi.Models.Entites;
 
@@ -11,9 +12,11 @@ using ProductApi.Models.Entites;
 namespace WebApplication6.Migrations
 {
     [DbContext(typeof(DesignDistrictContext))]
-    partial class DesignDistrictContextModelSnapshot : ModelSnapshot
+    [Migration("20240506121148_RemovePost")]
+    partial class RemovePost
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,34 +24,6 @@ namespace WebApplication6.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("DesignDistrict.Frontend.Model.Post", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Catagory")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PostDescription")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PostImage")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("TotalPrice")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Posts");
-                });
 
             modelBuilder.Entity("WebApplication6.Model.Comment", b =>
                 {
@@ -131,9 +106,6 @@ namespace WebApplication6.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("PostId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Price")
                         .HasColumnType("int");
 
@@ -152,8 +124,6 @@ namespace WebApplication6.Migrations
 
                     b.HasIndex("DesignPostId");
 
-                    b.HasIndex("PostId");
-
                     b.HasIndex("StoreId");
 
                     b.ToTable("Items");
@@ -166,9 +136,6 @@ namespace WebApplication6.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StoreId"));
-
-                    b.Property<int?>("PostId")
-                        .HasColumnType("int");
 
                     b.Property<string>("StoreDescription")
                         .IsRequired()
@@ -183,8 +150,6 @@ namespace WebApplication6.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("StoreId");
-
-                    b.HasIndex("PostId");
 
                     b.ToTable("Stores");
                 });
@@ -258,27 +223,9 @@ namespace WebApplication6.Migrations
                         .WithMany("Item")
                         .HasForeignKey("DesignPostId");
 
-                    b.HasOne("DesignDistrict.Frontend.Model.Post", null)
-                        .WithMany("Item")
-                        .HasForeignKey("PostId");
-
                     b.HasOne("WebApplication6.Model.Store", null)
                         .WithMany("Items")
                         .HasForeignKey("StoreId");
-                });
-
-            modelBuilder.Entity("WebApplication6.Model.Store", b =>
-                {
-                    b.HasOne("DesignDistrict.Frontend.Model.Post", null)
-                        .WithMany("Store")
-                        .HasForeignKey("PostId");
-                });
-
-            modelBuilder.Entity("DesignDistrict.Frontend.Model.Post", b =>
-                {
-                    b.Navigation("Item");
-
-                    b.Navigation("Store");
                 });
 
             modelBuilder.Entity("WebApplication6.Model.DesignPost", b =>

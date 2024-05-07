@@ -4,7 +4,8 @@ using ProductApi.Models.Entites;
 using SQLitePCL;
 using WebApplication6.Model;
 using WebApplication6.Model.Request;
-using static WebApplication6.Services.AuthService;
+using WebApplication6.Services;
+using static WebApplication6.Services.TokenService;
 
 namespace WebApplication6.Controllers
 {
@@ -53,7 +54,10 @@ namespace WebApplication6.Controllers
             newUser.Username = request.Username;
             newUser.Email = request.Email;
             newUser.Address = request.Address;
+            newUser.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(request.Password);
+
             newUser.PhoneNumber = request.PhoneNumber;
+            newUser.IsAdmin = request.IsAdmin;
 
             _context.UserAccounts.Add(newUser);
             _context.SaveChanges();
@@ -63,6 +67,7 @@ namespace WebApplication6.Controllers
             return Ok(new { Message = "User Created" });
 
         }
+       
 
     }
 }

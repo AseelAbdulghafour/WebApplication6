@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using ProductApi.Models.Entites;
 using System.Text;
+using WebApplication6.Services;
 
 namespace WebApplication6
 {
@@ -31,6 +32,8 @@ namespace WebApplication6
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
                 };
             });
+            builder.Services.AddScoped<TokenService>();
+
             builder.Services.AddDbContext<DesignDistrictContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             builder.Services.AddSwaggerGen(c =>

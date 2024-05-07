@@ -1,14 +1,28 @@
-﻿namespace WebApplication6.Model
+﻿using System.ComponentModel.DataAnnotations;
+using WebApplication6.Model;
+
+namespace DesignDistrict.Frontend.Model
 {
-    public class DesignPost
+    public class Post
     {
         public int Id { get; set; }
-        public UserAccount User { get; set; }
+
+       
         public string PostImage { get; set; }
+
+       
         public string PostDescription { get; set; }
+
+       
         public List<Item> Item { get; set; }
-        public List<Comment> Comments { get; set; }
+
+      
+        public List<Store> Store { get; set; }
+
+       
         public string Catagory { get; set; }
+
+     
         public decimal TotalPrice { get; internal set; }
     }
 }
