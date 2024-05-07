@@ -24,32 +24,32 @@ namespace WebApplication6.Controllers
         }
 
 
-        
+
         [HttpGet("myposts")]
-        public IActionResult GetMyPosts() 
-        { 
-            var username = User.FindFirst(TokenClaimsConstant.Username).Value; 
-            var user = _context.UserAccounts.FirstOrDefault(u => u.Username == username); 
-            if (user == null) { return NotFound("User not found"); 
-        }
-            var posts = _context.DesignPosts.Where(p => p.Id == user.UserAccountId).Select(p => new DesignPost 
+        public IActionResult GetMyPosts()
         {
+            var username = User.FindFirst(TokenClaimsConstant.Username).Value;
+            var user = _context.UserAccounts.FirstOrDefault(u => u.Username == username);
+            if (user == null) { return NotFound("User not found");
+            }
+            var posts = _context.DesignPosts.Where(p => p.Id == user.UserAccountId).Select(p => new DesignPost
+            {
                 Id = p.Id,
                 PostDescription = p.PostDescription,
                 Catagory = p.Catagory,
                 PostImage = p.PostImage,
-                TotalPrice = p.Item.Sum(r=> r.Price)
-            }).ToList(); 
-            return Ok(posts); 
+                TotalPrice = p.Item.Sum(r => r.Price)
+            }).ToList();
+            return Ok(posts);
         }
 
-        
+
 
         [HttpGet("{userId}")]
         public IEnumerable<DesignPost> GetUsersAndTheirPosts(int userId)
         {
             return _context.DesignPosts.
-                Where(r=> r.User.UserAccountId == userId)
+                Where(r => r.User.UserAccountId == userId)
                 .ToList();
         }
 
@@ -93,8 +93,9 @@ namespace WebApplication6.Controllers
             var comment = new Comment
             {
                 CommentText = request.Comment,
-                CreatedAt = DateTime.Now, 
+                CreatedAt = DateTime.Now,
                 Design = design
+            };
 
 
             _context.Comments.Add(comment);
@@ -121,7 +122,8 @@ namespace WebApplication6.Controllers
             {
                 PostDescription = request.PostDescription,
                 Catagory = request.Catagory,
-                User = user
+                User = user,
+                TotalPrice = request.TotalPrice
                
 
             };
@@ -144,6 +146,46 @@ namespace WebApplication6.Controllers
             _context.SaveChanges();
 
             return Ok(new PostCreatedResponse { Id = post.Id });
+        }
+        [HttpDelete("{postId}")]
+        public IActionResult DeletePost(int postId)
+        {
+            var username = User.FindFirst(TokenClaimsConstant.Username).Value;
+            var user = _context.UserAccounts.FirstOrDefault(u => u.Username == username);
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+
+            var postToDelete = _context.DesignPosts.FirstOrDefault(p => p.Id == postId && p.User.UserAccountId == user.UserAccountId);
+            if (postToDelete == null)
+            {
+                return NotFound("Post not found or you are not authorized to delete this post");
+            }
+
+            _context.DesignPosts.Remove(postToDelete);
+            _context.SaveChanges();
+
+            return Ok(new { Message = "Post deleted successfully" });
+        }
+        [HttpGet("filterByPrice")]
+        public IActionResult FilterByPrice(decimal? minPrice, decimal? maxPrice)
+        {
+            var postsQuery = _context.DesignPosts.AsQueryable();
+
+            if (minPrice.HasValue)
+            {
+                postsQuery = postsQuery.Where(p => p.TotalPrice >= minPrice.Value);
+            }
+
+            if (maxPrice.HasValue)
+            {
+                postsQuery = postsQuery.Where(p => p.TotalPrice <= maxPrice.Value);
+            }
+
+            var posts = postsQuery.ToList();
+
+            return Ok(posts);
         }
 
     }

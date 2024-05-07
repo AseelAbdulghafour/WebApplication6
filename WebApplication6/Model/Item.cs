@@ -9,5 +9,6 @@
         public string Source { get; set;}
         public string Catagory { get; set; }
         public string Style { get; set; }
+        public Store Store { get; set; }
     }
 }
