@@ -1,0 +1,21 @@
+﻿@using WebApplication6.Model
+
+@model PostRequest
+@using (Html.BeginForm("PostDesign", "DesignDistrict", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <label>Description</label>
+    <input type="text" asp-for="PostDescription" />
+
+    <label>Price</label>
+    <input type="number" asp-for="TotalPrice" />
+
+    <label>Image</label>
+    <input type="file" asp-for="PostImage" />
+
+    <label>Category Id</label>
+    <input type="number" asp-for="CatagoryId" />
+
+    //@Html.EditorForModel()
+
+    <button type="submit" class="btn btn-primary">Add</button>
+}

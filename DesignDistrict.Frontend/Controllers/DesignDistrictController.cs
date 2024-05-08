@@ -1,6 +1,8 @@
 ﻿using DesignDistrict.Frontend.API.WebApplication6.API;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WebApplication6.Model;
+using WebApplication6.Model.Request;
 
 
 namespace DesignDistrict.Frontend.Controllers
@@ -29,6 +31,26 @@ namespace DesignDistrict.Frontend.Controllers
         {
             var designers = await _client.DesignerList(id);
             return View(designers);
+        }
+
+        public async Task<IActionResult> PostDesign()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PostDesign(PostRequest request)
+        {
+            var design = await _client.PostDesign(request);
+            return RedirectToAction("Index");
+
+            if (design != null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            //ModelState.AddModelError("", "Something happened, Could not post design");
+            return BadRequest(ModelState);
         }
     }
 }
