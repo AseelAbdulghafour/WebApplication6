@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DesignDistrict.Frontend.Controllers
 {
+    //[Authorize(Roles = "Admin")]
     public class DesignDistrictController : Controller
     {
 
@@ -17,6 +18,10 @@ namespace DesignDistrict.Frontend.Controllers
         {
             var design = await _client.GetDesigns();
             return View(design);
+        }
+        public async Task<IActionResult> Upload()
+        {
+            return View();
         }
 
         public async Task<IActionResult> Myposts()
