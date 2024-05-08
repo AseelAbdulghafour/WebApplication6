@@ -150,7 +150,6 @@ namespace WebApplication6.Controllers
                 Design = design
             };
 
-
             _context.Comments.Add(comment);
             _context.SaveChanges();
 
