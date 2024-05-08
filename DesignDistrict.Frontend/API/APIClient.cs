@@ -65,6 +65,29 @@
                 }
                 return "";
             }
+
+            public async Task<DesignDistrictResponse> PostDesign(PostRequest form)
+            {
+                var request = new HttpRequestMessage(HttpMethod.Post, "api/DesignDistrict/create");
+                var content = new MultipartFormDataContent();
+                content.Add(new StreamContent(form.PostImage.OpenReadStream()), form.PostImage.Name, form.PostImage.FileName);
+                content.Add(new StringContent(form.PostDescription), "PostDescription");
+                content.Add(new StringContent(form.CatagoryId.ToString()), "CatagoryId");
+                content.Add(new StringContent(form.TotalPrice.ToString()), "TotalPrice");
+                request.Content = content;
+                var response = await _api.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+
+                //var response = await _api.PostAsJsonAsync("api/DesignDistrict/create", request);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var design = await response.Content.ReadFromJsonAsync<DesignDistrictResponse>();
+                    return design;
+                }
+
+                return null;
+            }
         }
     }
 

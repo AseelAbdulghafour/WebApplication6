@@ -100,7 +100,7 @@ namespace WebApplication6.Controllers
                    Description = p.PostDescription,
                    Catagory = p.DesignCatagory.Name,
                    PostImage = p.PostImage,
-                   Price = p.Item.Sum(r => r.Price)
+                   TotalPrice = p.Item.Sum(r => r.Price)
                })
                .ToList();
 
@@ -168,25 +168,26 @@ namespace WebApplication6.Controllers
                 PostDescription = request.PostDescription,
                 DesignCatagory = _context.Categories.FirstOrDefault(c => c.CategoryId == request.CatagoryId),
                 User = user,
+                TotalPrice = request.TotalPrice,
             };
 
-            foreach(var i in request.ItemsId)
-            {
-                var style = _context.Styles.Find(i.StyleId);
-                var category = _context.Categories.Find(i.CategoryId);
-                var itemType = _context.ItemTypes.Find(i.ItemTypeId);
+            //foreach(var i in request.ItemsId)
+            //{
+            //    var style = _context.Styles.Find(i.StyleId);
+            //    var category = _context.Categories.Find(i.CategoryId);
+            //    var itemType = _context.ItemTypes.Find(i.ItemTypeId);
 
-                post.Item.Add(new Item
-                {
-                    //ItemRoomCategory = category,
-                    ItemName = i.Name,
-                    Price = i.Price,
-                    ItemDescription = i.Name,
-                    Style = style,
-                    Source = i.URLLink,
-                    ItemType = itemType,
-                });
-            }
+            //    post.Item.Add(new Item
+            //    {
+            //        //ItemRoomCategory = category,
+            //        ItemName = i.Name,
+            //        Price = i.Price,
+            //        ItemDescription = i.Name,
+            //        Style = style,
+            //        Source = i.URLLink,
+            //        ItemType = itemType,
+            //    });
+            //}
 
             Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(),
                                             "uploads", user.Username.ToString()

@@ -20,17 +20,18 @@ namespace DesignDistrict.Frontend.Controllers
             {
                 _api = api;
             }
-            public IActionResult Register()
-            {
-                return View();
-            }
-            [HttpPost]
+        public IActionResult Register()
+        {
+            return View();
+        }
+
+        [HttpPost]
             public async Task<IActionResult> Register(SignupRequest req)
             {
                 var created = await _api.Register(req);
                 if (created)
                 {
-                    return Redirect("/Account/Login");
+                    return Redirect("/DesignDistrict/Index");
                 }
                 ModelState.AddModelError("Username", "Something happened, Could not create user");
                 return View(req);

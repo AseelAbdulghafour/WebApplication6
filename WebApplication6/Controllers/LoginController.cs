@@ -51,14 +51,12 @@ namespace WebApplication6.Controllers
         public IActionResult Registor(SignupRequest request)
         {
             
-            var newUser = UserAccount.Create(request.Username, request.Password, request.Email, request.PhoneNumber, request.Address, request.IsAdmin);
+            var newUser = UserAccount.Create(request.Username, request.Password, request.Email, request.PhoneNumber, request.Address, true);
             newUser.Username = request.Username;
             newUser.Email = request.Email;
             newUser.Address = request.Address;
             newUser.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(request.Password);
-
             newUser.PhoneNumber = request.PhoneNumber;
-            newUser.IsAdmin = request.IsAdmin;
 
             _context.UserAccounts.Add(newUser);
             _context.SaveChanges();
