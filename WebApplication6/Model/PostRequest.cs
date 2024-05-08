@@ -7,7 +7,10 @@ namespace WebApplication6.Model
         public string PostDescription { get; set; }
         public int CatagoryId { get; set; }
         public IFormFile PostImage { get; set; }
-        //public int StyleId { get; set; }
+
+        public decimal TotalPrice { get; internal set; }
+
+
 
         public List<NewItemRequest> ItemsId { get; set; }
     }
@@ -19,5 +22,6 @@ namespace WebApplication6.Model
         public int StyleId { get; set; }
         public string Name { get; set; }
         public int ItemTypeId { get; set; }
+
     }
 }

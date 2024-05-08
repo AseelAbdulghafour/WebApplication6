@@ -25,38 +25,30 @@ namespace WebApplication6.Controllers
         }
 
 
-        
+
         [HttpGet("myposts")]
-        public IActionResult GetMyPosts() 
-        { 
-            var username = User.FindFirst(TokenClaimsConstant.Username).Value; 
-            var user = _context.UserAccounts.FirstOrDefault(u => u.Username == username); 
-            if (user == null) { return NotFound("User not found"); 
-        }
-            var posts = _context.DesignPosts.Where(p => p.Id == user.UserAccountId).Select(p => new DesignPost 
+        public IActionResult GetMyPosts()
         {
+            var username = User.FindFirst(TokenClaimsConstant.Username).Value;
+            var user = _context.UserAccounts.FirstOrDefault(u => u.Username == username);
+            if (user == null) { return NotFound("User not found");
+            }
+            var posts = _context.DesignPosts.Where(p => p.Id == user.UserAccountId).Select(p => new DesignPost
+            {
                 Id = p.Id,
                 PostDescription = p.PostDescription,
                 DesignCatagory = p.DesignCatagory,
                 PostImage = p.PostImage,
-                TotalPrice = p.Item.Sum(r=> r.Price)
-            }).ToList(); 
-            return Ok(posts); 
+                TotalPrice = p.Item.Sum(r => r.Price)
+            }).ToList();
+            return Ok(posts);
         }
 
-
-
-        //[HttpGet("{userId}")]
-        //public IEnumerable<DesignDistrictResponse> GetUsersAndTheirPosts(int userId)
-        //{
-        //    return _context.DesignPosts.
-        //        Where(r=> r.User.UserAccountId == userId)
-        //        .ToList();
-        //}
 
         [HttpGet("{userId}")]
         public IEnumerable<DesignDistrictResponse> GetUsersAndTheirPosts(int userId)
         {
+
             var userPosts = _context.DesignPosts
                 .Where(r => r.User.UserAccountId == userId)
                 .Include(r => r.DesignCatagory)
@@ -90,6 +82,7 @@ namespace WebApplication6.Controllers
             return designDistrictResponses;
         }
 
+<<<<<<< HEAD
         [HttpGet]
         public IActionResult GetAllPosts()
         {
@@ -103,8 +96,31 @@ namespace WebApplication6.Controllers
                    Price = p.Item.Sum(r => r.Price)
                })
                .ToList();
+        }
 
-            return Ok(posts);
+        [HttpGet]
+        public IActionResult GetAllPosts(int? userId)
+        {
+            if (userId.HasValue)
+            {
+                // If userId is provided, return posts for the specified user
+                return Ok(GetUsersAndTheirPosts(userId.Value));
+            }
+            else
+            {
+                // If userId is not provided, return all posts
+                var posts = _context.DesignPosts
+                    .Select(p => new DesignDistrictResponse
+                    {
+                        Id = p.Id,
+                        Description = p.PostDescription,
+                        Catagory = p.DesignCatagory.Name,
+                        PostImage = p.PostImage,
+                        Price = p.Item.Sum(r => r.Price)
+                    })
+                    .ToList();
+                return Ok(posts);
+            }
         }
 
 
@@ -154,20 +170,15 @@ namespace WebApplication6.Controllers
                 return NotFound("User not found");
             }
 
-            // Create a new list of Item objects from the NewItemRequest objects in the request
-            //var items = request.ItemsId.Select(id => new NewItemRequest
-            //{
-            //    URLLink = _context.Items.FirstOrDefault(i => i.ItemId == id).URLLink,
-            //    Price = _context.Items.FirstOrDefault(i => i.ItemId == id).Price,
-            //    CategoryId = _context.Items.FirstOrDefault(i => i.ItemId == id).CategoryId,
-            //    StyleId = _context.Items.FirstOrDefault(i => i.ItemId == id).StyleId
-            //}).ToList();
-
             var post = new DesignPost
             {
                 PostDescription = request.PostDescription,
-                DesignCatagory = _context.Categories.FirstOrDefault(c => c.CategoryId == request.CatagoryId),
+
                 User = user,
+                TotalPrice = request.TotalPrice,
+               
+
+                DesignCatagory = _context.Categories.FirstOrDefault(c => c.CategoryId == request.CatagoryId),
             };
 
             foreach(var i in request.ItemsId)
@@ -207,6 +218,48 @@ namespace WebApplication6.Controllers
 
             return Ok(new PostCreatedResponse { Id = post.Id });
         }
+        [HttpDelete("{postId}")]
+        public IActionResult DeletePost(int postId)
+        {
+            var username = User.FindFirst(TokenClaimsConstant.Username).Value;
+            var user = _context.UserAccounts.FirstOrDefault(u => u.Username == username);
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+
+            var postToDelete = _context.DesignPosts.FirstOrDefault(p => p.Id == postId && p.User.UserAccountId == user.UserAccountId);
+            if (postToDelete == null)
+            {
+                return NotFound("Post not found or you are not authorized to delete this post");
+            }
+
+            _context.DesignPosts.Remove(postToDelete);
+            _context.SaveChanges();
+
+            return Ok(new { Message = "Post deleted successfully" });
+        }
+        [HttpGet("filterByPrice")]
+        public IActionResult FilterByPrice(decimal? minPrice, decimal? maxPrice)
+        {
+            var postsQuery = _context.DesignPosts.AsQueryable();
+
+            if (minPrice.HasValue)
+            {
+                postsQuery = postsQuery.Where(p => p.TotalPrice >= minPrice.Value);
+            }
+
+            if (maxPrice.HasValue)
+            {
+                postsQuery = postsQuery.Where(p => p.TotalPrice <= maxPrice.Value);
+            }
+
+            var posts = postsQuery.ToList();
+
+            return Ok(posts);
+        }
+
+        
 
         //public async Task<IActionResult> CreatePosts(PostRequest request)
         //{
