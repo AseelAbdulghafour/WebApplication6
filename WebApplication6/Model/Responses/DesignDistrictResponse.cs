@@ -9,6 +9,12 @@
         public string Description { get; set; }
         public decimal Price { get; set; }
             public int Id { get; set; }
+        public List<ItemResponse> Items { get; set; }
+        public List<CommentResponse> Comments { get; set; }
         }
     }
+public class CommentResponse
+{
+    public string Comment { get; set; }
+}
 
