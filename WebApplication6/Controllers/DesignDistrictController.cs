@@ -2,6 +2,7 @@
 using DesignDistrict.Frontend.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ProductApi.Models.Entites;
 using WebApplication6.Model;
 using WebApplication6.Model.Request;
@@ -36,7 +37,7 @@ namespace WebApplication6.Controllers
             {
                 Id = p.Id,
                 PostDescription = p.PostDescription,
-                Catagory = p.Catagory,
+                DesignCatagory = p.DesignCatagory,
                 PostImage = p.PostImage,
                 TotalPrice = p.Item.Sum(r => r.Price)
             }).ToList();
@@ -45,29 +46,83 @@ namespace WebApplication6.Controllers
 
 
 
+
         [HttpGet("{userId}")]
-        public IEnumerable<DesignPost> GetUsersAndTheirPosts(int userId)
+        public IEnumerable<DesignDistrictResponse> GetUsersAndTheirPosts(int userId)
         {
-            return _context.DesignPosts.
-                Where(r => r.User.UserAccountId == userId)
+
+            var userPosts = _context.DesignPosts
+                .Where(r => r.User.UserAccountId == userId)
+                .Include(r => r.DesignCatagory)
+                .Include(r=> r.User)
+                 .Include(r => r.Comments)
+
+                .Include(r => r.Item)
+                .ThenInclude(i => i.Style)
                 .ToList();
+
+            var designDistrictResponses = userPosts.Select(post => new DesignDistrictResponse
+            {
+                Id = post.Id,
+                Description = post.PostDescription,
+                Catagory = post.DesignCatagory.Name,
+                Username = post.User.Username,
+                Comments = post.Comments.Select(c => new CommentResponse
+                {
+                    Comment = $"{c.CommentText} {c.CreatedAt.ToString()}"
+                }).ToList(),
+                Items = post.Item.Select(item => new ItemResponse
+                {
+                    ItemId = item.ItemId,
+                    Source = item.Source,
+                    Price = item.Price,
+                    //CategoryName = item.Category.Name,
+                    Style = item.Style.Name
+                }).ToList()
+            });
+
+            return designDistrictResponses;
         }
 
-        [HttpGet]
-        public IActionResult GetAllPosts()
-        {
-            var posts = _context.DesignPosts
-               .Select(p => new DesignDistrictResponse
-               {
-                   Id = p.Id,
-                   Description = p.PostDescription,
-                   Catagory = p.Catagory,
-                   PostImage = p.PostImage,
-                   Price = p.Item.Sum(r => r.Price)
-               })
-               .ToList();
+        //[HttpGet]
+        //public IActionResult GetAllPosts()
+        //{
+        //    var posts = _context.DesignPosts
+        //       .Select(p => new DesignDistrictResponse
+        //       {
+        //           Id = p.Id,
+        //           Description = p.PostDescription,
+        //           Catagory = p.DesignCatagory.Name,
+        //           PostImage = p.PostImage,
+        //           Price = p.Item.Sum(r => r.Price)
+        //       })
+        //       .ToList();
 
-            return Ok(posts);
+        //    return Ok(posts);
+        //}
+        [HttpGet]
+        public IActionResult GetAllPosts(int? userId)
+        {
+            if (userId.HasValue)
+            {
+                // If userId is provided, return posts for the specified user
+                return Ok(GetUsersAndTheirPosts(userId.Value));
+            }
+            else
+            {
+                // If userId is not provided, return all posts
+                var posts = _context.DesignPosts
+                    .Select(p => new DesignDistrictResponse
+                    {
+                        Id = p.Id,
+                        Description = p.PostDescription,
+                        Catagory = p.DesignCatagory.Name,
+                        PostImage = p.PostImage,
+                        Price = p.Item.Sum(r => r.Price)
+                    })
+                    .ToList();
+                return Ok(posts);
+            }
         }
 
 
@@ -106,9 +161,9 @@ namespace WebApplication6.Controllers
 
         }
 
-    
+
         [HttpPost("create")]
-        public async Task<IActionResult> CreatePosts(PostRequest request)
+        public async Task<IActionResult> CreatePosts([FromForm] PostRequest request)
         {
             var username = User.FindFirst(TokenClaimsConstant.Username).Value;
             var user = _context.UserAccounts.FirstOrDefault(u => u.Username == username);
@@ -117,23 +172,42 @@ namespace WebApplication6.Controllers
                 return NotFound("User not found");
             }
 
+            
 
             var post = new DesignPost
             {
                 PostDescription = request.PostDescription,
-                Catagory = request.Catagory,
                 User = user,
-                TotalPrice = request.TotalPrice
+                TotalPrice = request.TotalPrice,
                
 
+                DesignCatagory = _context.Categories.FirstOrDefault(c => c.CategoryId == request.CatagoryId),
             };
 
+            foreach(var i in request.ItemsId)
+            {
+                var style = _context.Styles.Find(i.StyleId);
+                var category = _context.Categories.Find(i.CategoryId);
+                var itemType = _context.ItemTypes.Find(i.ItemTypeId);
+
+                post.Item.Add(new Item
+                {
+                    //ItemRoomCategory = category,
+                    ItemName = i.Name,
+                    Price = i.Price,
+                    ItemDescription = i.Name,
+                    Style = style,
+                    Source = i.URLLink,
+                    ItemType = itemType,
+                });
+            }
+
             Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(),
-                                        "uploads", user.Username.ToString()
-                                        ));
+                                            "uploads", user.Username.ToString()
+                                            ));
             var filePath = Path.Combine(Directory.GetCurrentDirectory(),
-                                        "uploads", user.Username.ToString(),
-                                        $"{post.Id}_{request.PostImage.FileName}");
+                                            "uploads", user.Username.ToString(),
+                                            $"{post.Id}_{request.PostImage.FileName}");
 
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
@@ -187,6 +261,8 @@ namespace WebApplication6.Controllers
 
             return Ok(posts);
         }
+
+        
 
     }
 }

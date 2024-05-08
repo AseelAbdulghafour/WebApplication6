@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProductApi.Models.Entites;
 
@@ -11,9 +12,11 @@ using ProductApi.Models.Entites;
 namespace WebApplication6.Migrations
 {
     [DbContext(typeof(DesignDistrictContext))]
-    partial class DesignDistrictContextModelSnapshot : ModelSnapshot
+    [Migration("20240507110346_UpdateCatStyle")]
+    partial class UpdateCatStyle
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -144,10 +147,10 @@ namespace WebApplication6.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("PostId")
+                    b.Property<int>("ItemTypeId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Price")
+                    b.Property<int>("PostId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Price")
@@ -166,6 +169,8 @@ namespace WebApplication6.Migrations
                     b.HasKey("ItemId");
 
                     b.HasIndex("ItemTypeId");
+
+                    b.HasIndex("PostId");
 
                     b.HasIndex("StoreId");
 
@@ -260,9 +265,46 @@ namespace WebApplication6.Migrations
 
                     b.HasKey("StoreId");
 
-                    b.HasIndex("PostId");
-
                     b.ToTable("Stores");
+                });
+
+            modelBuilder.Entity("WebApplication6.Model.Style", b =>
+                {
+                    b.Property<int>("StyleId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StyleId"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("StyleId");
+
+                    b.ToTable("Styles");
+
+                    b.HasData(
+                        new
+                        {
+                            StyleId = 1,
+                            Name = "Modern"
+                        },
+                        new
+                        {
+                            StyleId = 2,
+                            Name = "Rustic"
+                        },
+                        new
+                        {
+                            StyleId = 3,
+                            Name = "Classic"
+                        },
+                        new
+                        {
+                            StyleId = 4,
+                            Name = "Cosy"
+                        });
                 });
 
             modelBuilder.Entity("WebApplication6.Model.UserAccount", b =>
@@ -344,25 +386,27 @@ namespace WebApplication6.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DesignDistrict.Frontend.Model.Post", null)
+                    b.HasOne("WebApplication6.Model.DesignPost", "Post")
                         .WithMany("Item")
-                        .HasForeignKey("PostId");
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("WebApplication6.Model.Store", null)
+                    b.HasOne("WebApplication6.Model.Store", "Store")
                         .WithMany("Items")
-                        .HasForeignKey("StoreId");
-                });
+                        .HasForeignKey("StoreId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-            modelBuilder.Entity("WebApplication6.Model.Store", b =>
-                {
-                    b.HasOne("DesignDistrict.Frontend.Model.Post", null)
-                        .WithMany("Store")
-                        .HasForeignKey("PostId");
-                });
+                    b.HasOne("WebApplication6.Model.Style", "Style")
+                        .WithMany()
+                        .HasForeignKey("StyleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-            modelBuilder.Entity("DesignDistrict.Frontend.Model.Post", b =>
-                {
-                    b.Navigation("Item");
+                    b.Navigation("ItemType");
+
+                    b.Navigation("Post");
 
                     b.Navigation("Store");
 
