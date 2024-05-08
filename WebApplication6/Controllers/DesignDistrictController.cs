@@ -83,20 +83,20 @@ namespace WebApplication6.Controllers
         }
 
 
-        [HttpGet]
-        public IActionResult GetAllPosts()
-        {
-            var posts = _context.DesignPosts
-               .Select(p => new DesignDistrictResponse
-               {
-                   Id = p.Id,
-                   Description = p.PostDescription,
-                   Catagory = p.DesignCatagory.Name,
-                   PostImage = p.PostImage,
-                   TotalPrice = p.Item.Sum(r => r.Price)
-               })
-               .ToList();
-        }
+        //[HttpGet]
+        //public IActionResult GetAllPosts()
+        //{
+        //    var posts = _context.DesignPosts
+        //       .Select(p => new DesignDistrictResponse
+        //       {
+        //           Id = p.Id,
+        //           Description = p.PostDescription,
+        //           Catagory = p.DesignCatagory.Name,
+        //           PostImage = p.PostImage,
+        //           TotalPrice = p.Item.Sum(r => r.Price)
+        //       })
+        //       .ToList();
+        //}
 
         [HttpGet]
         public IActionResult GetAllPosts(int? userId)
@@ -116,7 +116,7 @@ namespace WebApplication6.Controllers
                         Description = p.PostDescription,
                         Catagory = p.DesignCatagory.Name,
                         PostImage = p.PostImage,
-                        Price = p.Item.Sum(r => r.Price)
+                        TotalPrice = p.TotalPrice
                     })
                     .ToList();
                 return Ok(posts);

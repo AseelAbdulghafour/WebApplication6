@@ -1,8 +1,10 @@
 ﻿using DesignDistrict.Frontend.API.WebApplication6.API;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WebApplication6.Model;
 using WebApplication6.Model.Request;
+using WebApplication6.Model.Responses;
 
 
 namespace DesignDistrict.Frontend.Controllers
@@ -52,7 +54,36 @@ namespace DesignDistrict.Frontend.Controllers
             //ModelState.AddModelError("", "Something happened, Could not post design");
             return BadRequest(ModelState);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(int postId)
+        {
+            var success = await _client.Delete(postId);
+
+            if (success)
+            {
+                return Ok();
+            }
+
+            ModelState.AddModelError("", "Something happened, Could not delete design");
+            return BadRequest(ModelState);
+        }
+
+
+        [HttpGet()]
+        public async Task<IActionResult> FilterByPrice(decimal minPrice, decimal maxPrice)
+        {
+            var designs = (await _client.GetDesigns())
+              
+                .Where(d => d.TotalPrice >= minPrice && d.TotalPrice<= maxPrice)
+                .ToList();
+
+
+            return View(designs);
+        }
     }
+
+
 }
 
 

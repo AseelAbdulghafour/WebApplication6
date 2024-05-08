@@ -88,6 +88,20 @@
 
                 return null;
             }
+
+            public async Task<bool> Delete(int postId)
+            {
+                var response = await _api
+                    .DeleteAsync($"api/DesignDistrict/{postId}");
+                return response.IsSuccessStatusCode;
+            }
+
+            public async Task<List<DesignDistrictResponse>> FilterByPrice(int postId, decimal minPrice, decimal maxPrice)
+            {
+                var response = await _api
+                    .GetFromJsonAsync<List<DesignDistrictResponse>>($"api/DesignDistrict/FilterByPrice/{postId}?minPrice={minPrice}&maxPrice={maxPrice}");
+                return response;
+            }
         }
     }
 
