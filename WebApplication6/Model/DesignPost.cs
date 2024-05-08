@@ -8,7 +8,8 @@
         public string PostDescription { get; set; }
         public List<Item> Item { get; set; }
         public List<Comment> Comments { get; set; }
-        public string Catagory { get; set; }
+        public Category DesignCatagory { get; set; }
         public decimal TotalPrice { get; internal set; }
+
     }
 }

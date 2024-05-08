@@ -9,7 +9,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddSession();
 builder.Services.AddScoped<APIClient>();
-builder.Services.AddHttpClient("Api", c => c.BaseAddress = new System.Uri("http://localhost:5209"));
+builder.Services.AddHttpClient("Api", c => c.BaseAddress = new System.Uri("https://localhost:44310"));
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
@@ -31,7 +31,6 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-builder.Services.AddControllers();
 
 
 // Configure the HTTP request pipeline.
@@ -47,7 +46,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseSession();
 app.UseAuthorization();
 
 app.MapControllerRoute(
