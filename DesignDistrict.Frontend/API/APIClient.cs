@@ -21,12 +21,27 @@
                               new AuthenticationHeaderValue("Bearer", token);
             }
 
-            public async Task<PageListResult<DesignDistrictResponse>> GetBanks()
+            public async Task<List<DesignDistrictResponse>> GetDesigns()
             {
                 var response = await _api
-                    .GetFromJsonAsync<PageListResult<DesignDistrictResponse>>("api/DesignDistrict");
+                    .GetFromJsonAsync<List<DesignDistrictResponse>>("api/DesignDistrict");
                 return response;
             }
+
+            public async Task<List<DesignDistrictResponse>> MyPosts()
+            {
+                var response = await _api
+                    .GetFromJsonAsync<List<DesignDistrictResponse>>("api/DesignDistrict/myposts");
+                return response;
+            }
+
+            public async Task<List<DesignDistrictResponse>> DesignerList(int userId)
+            {
+                var response = await _api
+                    .GetFromJsonAsync<List<DesignDistrictResponse>>($"api/DesignDistrict/{userId}");
+                return response;
+            }
+
             public async Task<bool> Register(SignupRequest request)
             {
                 var response = await _api.PostAsJsonAsync("/api/login/Registor", request);
@@ -38,7 +53,7 @@
             }
             public async Task<string> Login(string username, string password)
             {
-                var response = await _api.PostAsJsonAsync("/api/login",
+                var response = await _api.PostAsJsonAsync("/api/login/login",
                     new UserLoginRequest { Username = username, Password = password });
 
                 if (response.IsSuccessStatusCode)

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using ProductApi.Models.Entites;
+using ProductApi.Models.Requests;
 using SQLitePCL;
 using WebApplication6.Model;
 using WebApplication6.Model.Request;
@@ -24,9 +25,9 @@ namespace WebApplication6.Controllers
                 _context = context;
             }
             [HttpPost("Login")]
-            public IActionResult Login(string username, string password)
+            public IActionResult Login(UserLoginRequest request)
             {
-                var response = _service.GenerateToken(username, password);
+                var response = _service.GenerateToken(request.Username, request.Password);
 
                 if (response.IsValid)
                 {
