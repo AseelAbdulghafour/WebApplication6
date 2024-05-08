@@ -16,9 +16,9 @@
             {
                 _api = factory.CreateClient("Api");
 
-                var token = accessor.HttpContext.Session.GetString("Token");
+                //var token = accessor?.HttpContext.Session.GetString("Token") ?? "";
                 _api.DefaultRequestHeaders.Authorization =
-                              new AuthenticationHeaderValue("Bearer", token);
+                              new AuthenticationHeaderValue("Bearer", "");
             }
 
             public async Task<PageListResult<DesignDistrictResponse>> GetBanks()

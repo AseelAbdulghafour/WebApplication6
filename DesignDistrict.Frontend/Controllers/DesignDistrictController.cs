@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DesignDistrict.Frontend.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     public class DesignDistrictController : Controller
     {
 
@@ -18,6 +18,10 @@ namespace DesignDistrict.Frontend.Controllers
         {
             var design = await _client.GetBanks();
             return View(design.Data);
+        }
+        public async Task<IActionResult> Upload()
+        {
+            return View();
         }
 
 

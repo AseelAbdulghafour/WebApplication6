@@ -93,9 +93,9 @@ namespace WebApplication6.Controllers
             var comment = new Comment
             {
                 CommentText = request.Comment,
-                CreatedAt = DateTime.Now, 
+                CreatedAt = DateTime.Now,
                 Design = design
-
+            };
 
             _context.Comments.Add(comment);
             _context.SaveChanges();
