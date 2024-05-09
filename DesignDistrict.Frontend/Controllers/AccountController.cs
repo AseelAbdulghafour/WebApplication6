@@ -65,7 +65,7 @@ namespace DesignDistrict.Frontend.Controllers
                     HttpContext.Session.SetString("Token", jwtToken);
                     HttpContext.Response.Cookies.Append("Token", jwtToken);
 
-                    return Redirect("/DesignDistrict/Index");
+                    return Redirect("/Home/Index");
                 }
 
 
