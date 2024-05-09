@@ -33,7 +33,7 @@ namespace WebApplication6.Controllers
             var user = _context.UserAccounts.FirstOrDefault(u => u.Username == username);
             if (user == null) { return NotFound("User not found");
             }
-            var posts = _context.DesignPosts.Where(p => p.Id == user.UserAccountId).Select(p => new DesignPost
+            var posts = _context.DesignPosts.Where(p => p.User.UserAccountId == user.UserAccountId).Select(p => new DesignPost
             {
                 Id = p.Id,
                 PostDescription = p.PostDescription,
@@ -76,7 +76,10 @@ namespace WebApplication6.Controllers
                     Price = item.Price,
                     //CategoryName = item.Category.Name,
                     Style = item.Style.Name
-                }).ToList()
+                }).ToList(),
+                PostImage = post.PostImage,
+                TotalPrice = post.TotalPrice,
+
             });
 
             return designDistrictResponses;

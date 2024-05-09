@@ -44,7 +44,7 @@ namespace DesignDistrict.Frontend.Controllers
         public async Task<IActionResult> PostDesign(PostRequest request)
         {
             var design = await _client.PostDesign(request);
-            return RedirectToAction("Index");
+            return RedirectToAction("MyPosts");
 
             if (design != null)
             {
