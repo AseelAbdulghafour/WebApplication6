@@ -198,6 +198,31 @@
               <a href="#!" data-filter=".wordpress">BedRoom</a>
             </li> -->
         </ul>
+
+        <div class="container" style="margin-top:20px;">
+            <div class="row">
+
+                @foreach (var design in Model)
+                {
+                    <div class="col-4 align-self-center mb-30 event_outer design wordpress">
+                        <div class="events_item">
+                            <div class="thumb">
+                                <a href="#"><img src="https://localhost:44310/@design.PostImage" alt=""></a>
+                                <span class="category">@design.Catagory</span>
+
+                                <span class="price"><h6 style="font-size: 10;">@design.TotalPrice<em style="font-size:10;">KD</em></h6></span>
+                            </div>
+                            <div class="down-content">
+                                <span class="author">@design.Username</span>
+                                <h4>@design.Description </h4>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+        </div>
+
         @*   @foreach (var d in Model)
         {
         <div class="col-lg-4 col-md-6 align-self-center mb-30 event_outer col-md-6 design wordpress">
