@@ -1,3 +1,4 @@
+using DesignDistrict.Frontend.API.WebApplication6.API;
 using DesignDistrict.Frontend.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -7,16 +8,20 @@ namespace DesignDistrict.Frontend.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly APIClient _client;
+
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, APIClient client)
         {
+            _client = client;
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var response = await _client.DesignerList(2);
+            return View(response);
         }
 
         public IActionResult Privacy()
