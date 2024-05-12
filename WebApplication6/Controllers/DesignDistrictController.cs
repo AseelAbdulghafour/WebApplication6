@@ -33,13 +33,14 @@ namespace WebApplication6.Controllers
             var user = _context.UserAccounts.FirstOrDefault(u => u.Username == username);
             if (user == null) { return NotFound("User not found");
             }
-            var posts = _context.DesignPosts.Where(p => p.User.UserAccountId == user.UserAccountId).Select(p => new DesignPost
+            var posts = _context.DesignPosts.Where(p => p.User.UserAccountId == user.UserAccountId).Select(p => new DesignDistrictResponse
             {
                 Id = p.Id,
-                PostDescription = p.PostDescription,
-                DesignCatagory = p.DesignCatagory,
+                Description = p.PostDescription,
+                Catagory = p.DesignCatagory.Name,
                 PostImage = p.PostImage,
-                TotalPrice = p.Item.Sum(r => r.Price)
+                TotalPrice = p.TotalPrice,
+                Username = p.User.Username
             }).ToList();
             return Ok(posts);
         }

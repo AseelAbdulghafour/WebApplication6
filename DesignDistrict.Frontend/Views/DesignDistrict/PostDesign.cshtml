@@ -1,8 +1,8 @@
 ﻿@using WebApplication6.Model
 
-@model PostRequest
+ @model PostRequest
 @using (Html.BeginForm("PostDesign", "DesignDistrict", FormMethod.Post, new { enctype = "multipart/form-data" }))
-{
+@* {
     <label>Description</label>
     <input type="text" asp-for="PostDescription" />
 
@@ -20,4 +20,39 @@
     <button type="submit" class="btn btn-primary">Add</button>
 
 
-}
+}  *@
+
+<div class="container">
+        <div class="row">
+
+    <form action="/DesignDistrict/PostDesign" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="PostDescription">Description</label>
+            <input type="text" id="PostDescription" name="PostDescription" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label for="TotalPrice">Price</label>
+            <input type="number" id="TotalPrice" name="TotalPrice" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label for="PostImage">Image</label>
+            <input type="file" id="PostImage" name="PostImage" class="form-control-file" />
+        </div>
+
+        <div class="form-group">
+            <label for="CatagoryId">Category Id</label>
+            <input type="number" id="CatagoryId" name="CatagoryId" class="form-control" />
+        </div>
+
+@*         <button type="submit" class="btn btn-primary">Add</button>
+
+ *@
+            <div class="buttons">
+                <div class="main-button">
+                        <button type="submit" class="btn btn-primary">ADD</button>
+                </div>
+</form>
+</div>
+</div>

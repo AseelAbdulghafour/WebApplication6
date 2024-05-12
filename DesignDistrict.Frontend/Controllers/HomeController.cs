@@ -20,7 +20,7 @@ namespace DesignDistrict.Frontend.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var response = await _client.DesignerList(2);
+            var response = await _client.GetDesigns();
             return View(response);
         }
 
